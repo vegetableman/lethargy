@@ -16,8 +16,8 @@ class root.Lethargy
     @delay = if delay? then delay else 150
 
     # Used internally and should not be manipulated
-    @lastUpDeltas = (null for [1..(@stability * 2)])
-    @lastDownDeltas = (null for [1..(@stability * 2)])
+    @lastDeltas = (null for [1..(@stability * 2)])
+    # @lastDownDeltas = (null for [1..(@stability * 2)])
     @deltasTimestamp = (null for [1..(@stability * 2)])
 
   # Checks whether the mousewheel event is an intent
@@ -38,20 +38,22 @@ class root.Lethargy
     @deltasTimestamp.shift()
 
     # If lastDelta is positive, it means the user scrolled up
-    if (lastDelta > 0)
-      @lastUpDeltas.push(lastDelta)
-      @lastUpDeltas.shift()
-      return @isInertia(1)
+    # if (lastDelta > 0)
+    @lastDeltas.push(lastDelta)
+    @lastDeltas.shift()
+    return @isInertia(1)
     # Otherwise, the user scrolled down
-    else
-      @lastDownDeltas.push(lastDelta)
-      @lastDownDeltas.shift()
-      return @isInertia(-1)
-    false;
+      # else
+      #   @lastDownDeltas.push(lastDelta)
+      #   @lastDownDeltas.shift()
+      #   return @isInertia(-1)
+    # false;
 
   isInertia: (direction) ->
     # Get the relevant last*Delta array
-    lastDeltas = if direction == -1 then @lastDownDeltas else @lastUpDeltas
+    # lastDeltas = if direction == -1 then @lastDownDeltas else @lastDeltas
+
+    lastDeltas = @lastDeltas;
 
     # If the array is not filled up yet, we cannot compare averages, so assume the scroll event to be intentional
     if lastDeltas[0] == null
